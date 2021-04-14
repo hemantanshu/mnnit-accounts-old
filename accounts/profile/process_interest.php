@@ -1,0 +1,340 @@
+<?php
+/*Licensed Under Support Gurukul. http://www.supportgurukul.com */
+ob_start();
+//error_reporting(0);
+
+require_once '../include/class.department.php';
+require_once '../include/class.personalInfo.php';
+require_once '../include/class.employeeInfo.php';
+
+
+$department = new department();
+if(!$department->checkLogged())
+        $department->redirect('../');
+if(!$department->isAdmin())
+        $department->palert("Only Administrator Has The Privilege To Process The Interest", "./");
+
+if(isset ($_POST) && count($_POST) > 0){
+    $error = 0;
+    $errorLog = array();
+    $interest04 = $_POST['int04'];
+	$interest05 = $_POST['int05'];
+	$interest06 = $_POST['int06'];
+	$interest07 = $_POST['int07'];
+	$interest08 = $_POST['int08'];
+	$interest09 = $_POST['int09'];
+	$interest10 = $_POST['int10'];
+	$interest11 = $_POST['int11'];
+	$interest12 = $_POST['int12'];
+	$interest01 = $_POST['int01'];
+	$interest02 = $_POST['int02'];
+	$interest03 = $_POST['int03'];
+    $sessionId = $_POST['session'];
+    if (!is_numeric($interest04) 
+	    || !is_numeric($interest05) 
+		|| !is_numeric($interest06) 
+		|| !is_numeric($interest07) 
+		|| !is_numeric($interest08) 
+		|| !is_numeric($interest09) 
+		|| !is_numeric($interest10) 
+		|| !is_numeric($interest11) 
+		|| !is_numeric($interest12) 
+		|| !is_numeric($interest01) 
+		|| !is_numeric($interest02) 
+		|| !is_numeric($interest03))
+		{
+        array_push($errorLog, "Please Input Interest Rate In Correct Form");
+        ++$error;
+    }    
+    if($_POST['submit'] == "Final Settlement Of This Employee"){
+        $type = "individual";
+        $value = $_POST['employeeId'];
+    }
+    if($_POST['submit'] == "Interest All Employees"){
+        $type = "all";
+        $value = $_POST['employee'];
+    }
+    if($value == ""){
+        ++$error;
+        array_push($errorLog, "Please Select Any Choice");
+    }
+    if($error == 0){
+        if($_POST['fundType'] == "GPF")
+            $url = "./process_gpf";
+        elseif($_POST['fundType'] == "CPF")
+            $url = "./process_cpf";
+        else
+            $url = "./process_nps";    
+        if ($type == "all")
+            $department->redirect("./".$url."1.php?session=".$sessionId."&interest04=".$interest04."&interest05=".$interest05."&interest06=".$interest06."&interest07=".$interest07."&interest08=".$interest08."&interest09=".$interest09."&interest10=".$interest10."&interest11=".$interest11."&interest12=".$interest12."&interest01=".$interest01."&interest02=".$interest02."&interest03=".$interest03."&value=".$value."&type=".$type."");
+        else 
+             $department->redirect("./".$url."2.php?session=".$sessionId."&interest04=".$interest04."&interest05=".$interest05."&interest06=".$interest06."&interest07=".$interest07."&interest08=".$interest08."&interest09=".$interest09."&interest10=".$interest10."&interest11=".$interest11."&interest12=".$interest12."&interest01=".$interest01."&interest02=".$interest02."&interest03=".$interest03."&value=".$value."");                   
+    }                                       
+}                                           
+$employeeInfo = new employeeInfo();
+$personalInfo = new personalInfo();
+
+ob_end_flush();
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Accounts Section -- GPF Interest Payment</title>
+<link rel="stylesheet" type="text/css" href="../include/default.css" media="screen" />
+<script type="text/javascript" src="../include/jquery.min.js"></script>
+<script type="text/javascript" src="../include/ddaccordion.js"></script>
+<script language="javascript" type="text/javascript">
+                        var currenttime = "<?php
+                                    date_default_timezone_set('Asia/Calcutta');
+                                    print date("F d, Y H:i:s", time())?>"
+            var montharray=new Array("January","February","March","April","May","June","July","August","September","October","November","December")
+            var serverdate=new Date(currenttime)
+
+            function padlength(what)
+            {
+                var output=(what.toString().length==1)? "0"+what : what
+                return output
+            }
+
+            function displaytime()
+            {
+                serverdate.setSeconds(serverdate.getSeconds()+1)
+
+                var datestring=montharray[serverdate.getMonth()]+" "+padlength(serverdate.getDate())+", "+serverdate.getFullYear()
+                var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes())+":"+padlength(serverdate.getSeconds())
+                document.getElementById("servertime").innerHTML=datestring+" "+timestring
+            }
+
+            window.onload=function()
+            {
+                setInterval("displaytime()", 1000)
+            }
+
+       </script>
+<script type="text/javascript">
+
+ddaccordion.init({
+    headerclass: "headerbar", //Shared CSS class name of headers group
+    contentclass: "submenu", //Shared CSS class name of contents group
+    revealtype: "click", //Reveal content when user clicks or onmouseover the header? Valid value: "click", "clickgo", or "mouseover"
+    mouseoverdelay: 200, //if revealtype="mouseover", set delay in milliseconds before header expands onMouseover
+    collapseprev: true, //Collapse previous content (so only one open at any time)? true/false
+    defaultexpanded: [0], //index of content(s) open by default [index1, index2, etc] [] denotes no content
+    onemustopen: true, //Specify whether at least one header should be open always (so never all headers closed)
+    animatedefault: false, //Should contents open by default be animated into view?
+    persiststate: true, //persist state of opened contents within browser session?
+    toggleclass: ["", "selected"], //Two CSS classes to be applied to the header when it's collapsed and expanded, respectively ["class1", "class2"]
+    togglehtml: ["", "", ""], //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
+    animatespeed: "normal", //speed of animation: integer in milliseconds (ie: 200), or keywords "fast", "normal", or "slow"
+    oninit:function(headers, expandedindices){ //custom code to run when headers have initalized
+        //do nothing
+    },
+    onopenclose:function(header, index, state, isuseractivated){ //custom code to run whenever a header is opened or closed
+        //do nothing
+    }
+})
+
+</script>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<style type="text/css">
+.interest tr td {
+	padding: 5px;
+	border-bottom:#666 solid thin;
+	border-right:#666 solid thin;
+}
+.interest tr td input {
+	padding: 2px;
+	background-color: #FFE;
+	border: thin solid #CCC;
+}
+</style>
+</head>
+
+<body>
+<div>
+  <div class="top">
+    <div class="header">
+      <div class="left"><img class="imgright" src="../img/logo.gif" alt="Forest Thistle" height="105px">&nbsp;Accounts Department</div>
+      <!--<div class="right">
+        <div align="center"> MNNIT <br />
+          ALLAHABAD</div>-->
+      </div> 
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="navigation"> <a href="./" target="_parent">Home</a> <a href="changePassword.php" target="_parent">Change Password</a> <a href="./logout.php" target="_parent">Logout</a> <a href="#" target="_parent">&nbsp;&nbsp; &nbsp;Server Time : <span id="servertime"></span></a>
+      <div class="clearer"><span></span> </div>
+    </div>
+    <div class="main">
+      <div class="content">
+        <form action="" method="post">
+          <table align="center" border="0" width="100%">
+            <?php
+                if(isset ($error) && $error != 0 && is_array($errorLog)){
+                    foreach ($errorLog as $value) {
+                            echo "<tr>
+                                    <td></td>
+                                            <td colspan=\"4\" align=\"left\"><font class=\"error\">".$value."</font></td>
+                                    </tr>";
+                    }
+                }
+                echo "
+                        <tr>
+                                <td height = \"10px\"></td>
+                        </tr>";
+            ?>
+            <tr>
+              <td align="center" colspan="5"><font class="error">Please Select The Correct Operation To Be Performed</font><br />
+                <hr size="2" />
+                <br />
+                <br /></td>
+            </tr>
+            <tr>
+              <td align="right"><font class="error">Input The Interest Rate</font></td>
+              <td height=""></td>
+              <td align="right"></td>
+            </tr>
+            <tr>
+              <td height="10px" colspan="3"></td>
+            </tr>
+            <tr>
+              <td colspan="3"><center>
+                  <table width="100%" cellspacing="0" style="border-left:thin solid #CCC; border-top:#CCC solid thin"  class="interest">
+                    <tr>
+                      <td>April</td>
+                      <td><input type="text" name="int04" id="int4" /></td>
+                      <td>May</td>
+                      <td><input type="text" name="int05" id="int5" /></td>
+                     </tr>
+                    <tr>
+                    <td>June</td>
+                      <td><input type="text" name="int06"  id="int6"/></td> 
+                      <td>July</td>
+                      <td><input type="text" name="int07"  id="int7"/></td>
+                    </tr>
+                    <tr>
+                    <td>August</td>
+                      <td><input type="text" name="int08" id="int8" /></td>
+                      <td>September</td>
+                      <td><input type="text" name="int09" id="int9" /></td>
+                    </tr>
+                    <tr>
+                    <td>October</td>
+                      <td><input type="text" name="int10" id="int10" /></td>
+                      <td>November</td>
+                      <td><input type="text" name="int11" id="int11" /></td>
+                    </tr>
+                    <tr>
+                      <td>December</td>
+                      <td><input type="text" name="int12" id="int12" /></td>
+                      
+                      <td>January</td>
+                      <td><input type="text" name="int01"  id="int1"/></td>
+                    </tr>
+                    <tr>
+                       <td>February</td>
+                      <td><input type="text" name="int02" id="int2" /></td>
+                      <td>March</td>
+                      <td><input type="text" name="int03" id="int3" /></td>
+                    </tr>
+                   
+                  </table>
+                  
+                  <br/>
+                  
+                </center></td>
+            </tr>
+            <tr>
+              <td height="30px"></td>
+            </tr>
+            <tr>
+              <td align="right"><font class="error">Select Financial Year</font></td>
+              <td></td>
+              <td align="left"><select name="session" style="width:200px">
+                  <?php 
+                        $sessionIds = $department->getSessionIds();
+                        foreach ($sessionIds as $sessionId){
+                            $details = $department->getSessionDetails($sessionId);
+                            echo "<option value=\"$sessionId\">".$details[1]."</option>";
+                        }
+                    ?>
+                </select></td>
+            </tr>
+            <tr>
+              <td height="10px"></td>
+            </tr>
+            <tr>
+              <td align="right"><font class="error">Select Fund Type</font></td>
+              <td></td>
+              <td align="left"><select name="fundType" style="width:200px">
+                  <option value="GPF">GPF</option>
+                  <option value="CPF">CPF</option>
+                  <option value="NPS">NPS</option>
+                </select></td>
+            </tr>
+            <tr>
+              <td colspan="5"><br />
+                <hr size="1" />
+                <br />
+                <br /></td>
+            </tr>
+            <tr>
+              <td width="30%" align="right"><font class="error">Individual Employee :</font></td>
+              <td width="2%"></td>
+              <td align="left" width="35%"><select name="employeeId" style="width:250px">
+                  <option value="">--Select--</option>
+                  <?php
+                                                    $employeeId = $employeeInfo->getEmployeeIds(true);
+                                                    foreach($employeeId as $value){
+                                                        $personalInfo->getEmployeeInformation($value, true);
+                                                        echo "<option value=\"".$value."\">".$personalInfo->getName()."-->".$personalInfo->getEmployeeCode()."</option>";
+                                                    }
+                                                ?>
+                </select></td>
+              <td width="2%"></td>
+              <td align="left" width="30%"><input type="submit" name="submit" style="width:250px" value="Final Settlement Of This Employee" /></td>
+            </tr>
+            <tr>
+              <td colspan="5"><br />
+                <hr size="1" />
+                <br />
+                <br /></td>
+            </tr>
+            <tr>
+              <td width="30%" align="right"><font class="error">All Employee :</font></td>
+              <td width="2%"></td>
+              <td align="left" width="35%"><select name="employee" style="width:250px">
+                  <option value="all">All</option>
+                </select></td>
+              <td width="2%"></td>
+              <td align="left" width="30%"><input type="submit" name="submit" style="width:250px" value="Interest All Employees" /></td>
+            </tr>
+            <tr>
+              <td colspan="5"><br />
+                <hr size="1" />
+                <br />
+                <br /></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+      <div class="sidenav">
+        <hr size="2" />
+        <center>
+          <font color="#FF0000" size="+1"><b><?php echo $department->getOfficerName(); ?></b></font>
+        </center>
+        <hr size="2" />
+        <br />
+        <h2><font color="#008000">QUICK NAVIGATION PANEL</font></h2>
+        <?php
+            include './navigation/navigation.php';
+        ?>
+      </div>
+      <div class="clearer"><span></span></div>
+    </div>
+    <div class="footer">@webteam.<a href="http://www.mnnit.ac.in" title="MNNIT">mnnit</a> Designed And Developed By Hemant Kumar Sah (B.Tech ECE 2011)</div>
+  </div>
+</div>
+</body>
+</html>

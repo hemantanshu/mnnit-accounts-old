@@ -1,0 +1,183 @@
+
+
+html {min-height: 100%;}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+a {
+color: #005B9C;
+}
+
+a:hover {
+color: #0B2444
+}
+
+img {
+border: 0;
+}
+
+body {
+	background-color:#FFFFFF;	
+	font: normal 62.5% Tahoma,sans-serif;
+}
+font.error{
+	font-family:"Times New Roman", Times, serif;
+	font-size:14px;
+	color:#F00;
+	font-weight:bold;
+}
+	
+font.green{
+	font-family:"Times New Roman", Times, serif;
+	font-size:14px;
+	color:#060;
+	font-weight:bold;
+}
+	
+font.display{
+	font-family:"Times New Roman", Times, serif;
+	font-size:14px;
+	color:#069;
+	font-weight:bold;
+	text-transform:capitalize;
+	
+}
+font.salarySlip{
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-weight:400;
+	text-decoration:none;
+	
+}
+font.salaryPrint{
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+}
+
+p,ul {padding-bottom: 1.2em;}
+
+li {list-style: none;}
+
+h1 {
+	font: normal 1.8em Tahoma,sans-serif;
+	margin-bottom: 4px;
+	color: #005B9C;
+	margin: 0 0 7px 0;
+}
+
+h2 {
+	font: normal 1.3em Tahoma,sans-serif;
+	margin-bottom: 4px;
+	color: #005B9C;
+	margin: 0 0 7px 0;
+}
+
+
+.clearer {clear: both;}
+
+.left {float: left;}
+
+.right {float: right;}
+
+.container {
+	background-color: #FFF;
+	font-size: 1.2em;
+	margin: 0 auto;
+	padding: 0 8px 8px;
+	width: 950px;
+}
+
+
+.top {
+	padding: 8px 8px 0;
+}
+
+
+.header {
+	background-color: #fff;
+	font-size: 1.2em;
+	height: 105px;
+	margin: 0 auto;
+	padding: 8px 8px 5px;
+	width: 950px;
+}
+.header .left, .header .right {
+	background-color: #000033;
+	color: #fff;
+	color: #FFF;
+	height: 105px;	
+
+}
+.header .left {
+	background: transparent url(../img/Top.jpg) top left repeat-x;
+	font: normal 2.8em "Trebuchet MS",sans-serif;
+	line-height: 105px;
+	width: 750px;
+	text-align: left;	
+	
+}
+.header .right {
+	overflow: auto;
+	width: 200px;
+
+}
+
+.header .right div {
+	padding-left: 16px;
+	padding-top: 16px;
+	font: normal 1.6em "Trebuchet MS",sans-serif;
+}
+
+
+
+
+
+
+.main {
+	border-top: 8px solid #FFF;
+	background: url(../img/bgmain.jpg) repeat-y ;
+}
+
+
+/* content */
+.content {
+	float: left;
+	margin: 10px 0;
+	padding: 0 16px;
+	width: 700px;
+}
+.content {
+	color: #666;
+	font-size: 1.0em;
+	margin-bottom: 6px;
+}
+
+
+.content .imgright {
+padding: 5px;
+border: 1px solid #666;
+margin-left: 4px;
+float: right;
+}
+
+
+
+.footer {
+	background: url(../img/bluefooter.jpg) repeat-x;
+	color: #FFF;
+	font: bold 1em sans-serif;
+	line-height: 39px;
+	text-align: center;
+
+}
+.footer a,.footer a:hover {color: #FFF;}
+
+
+
+
+
+
